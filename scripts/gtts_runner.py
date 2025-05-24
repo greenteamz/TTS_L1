@@ -27,9 +27,21 @@ for i, filename in enumerate(to_process, start=processed_count + 1):
     base_name = os.path.splitext(filename)[0]
     mp3_path = os.path.join(OUTPUT_DIR, f"{base_name}.mp3")
 
+    #with open(txt_path, "r", encoding="utf-8") as f:
+    #    text = f.read().replace('\n', ' ').strip()
     with open(txt_path, "r", encoding="utf-8") as f:
         text = f.read().replace('\n', ' ').strip()
-
+    
+    # Add closing watermark and disclaimer
+    closing_note = (
+        " comment பண்ணுங்க.                                                                                    "
+        "This video is part of an artistic Tamil audio series that explores the emotional and psychological depth "
+        "of human relationships through narrated fiction. All characters and events are fictional and intended for "
+        "mature literary appreciation."
+    )
+    
+    text += closing_note
+    
     try:
         tts = gTTS(text=text, lang='ta')
         tts.save(mp3_path)
@@ -37,6 +49,7 @@ for i, filename in enumerate(to_process, start=processed_count + 1):
         success_count += 1
     except Exception as e:
         print(f"❌ Error processing {filename}: {e}")
+        break  # ❗ Stop further processing on any failure
 
     time.sleep(10)
 
